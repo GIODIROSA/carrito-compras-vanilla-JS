@@ -1,5 +1,10 @@
+const cards = document.getElementById("cards");
 const items = document.getElementById("items");
+const footer = document.getElementById("footer");
+// para acceder al contenido del template no olvidar .content
 const templateCard = document.getElementById("template-card").content;
+const templateFooter = document.getElementById("template-footer").content;
+const templateCarrito = document.getElementById("template-carrito").content;
 const fragment = document.createDocumentFragment();
 let carrito = {};
 
@@ -7,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchData();
 });
 
-items.addEventListener("click", (e) => {
+cards.addEventListener("click", (e) => {
   addCarrito(e);
 });
 
@@ -34,7 +39,7 @@ const pintarCards = (data) => {
     fragment.appendChild(clone);
   });
 
-  items.appendChild(fragment);
+  cards.appendChild(fragment);
 };
 
 const addCarrito = (e) => {
@@ -67,6 +72,26 @@ const setCarrito = (objeto) => {
   }
 
   carrito[producto.id] = { ...producto };
+  pintarCarrito();
+};
 
-  console.log("este es el producto:", carrito);
+const pintarCarrito = () => {
+  //console.log(carrito);
+  //convertir el objeto para que se pueda recorrer como un array
+  //se usa el object.values
+
+  Object.values(carrito).forEach((producto) => {
+    const { id, title, cantidad, precio } = producto;
+    //inicializar en cero para que no se repita en el DOM
+    items.innerHTML = "";
+    templateCarrito.querySelector("th").textContent = id;
+    templateCarrito.querySelectorAll("td")[0].textContent = title;
+    templateCarrito.querySelectorAll("td")[1].textContent = cantidad;
+    templateCarrito.querySelector(".btn-info").dataset.id = id;
+    templateCarrito.querySelector(".btn-danger").dataset.id = id;
+    templateCarrito.querySelector("span").textContent = cantidad * precio;
+    const clone = templateCarrito.cloneNode(true);
+    fragment.appendChild(clone);
+  });
+  items.appendChild(fragment);
 };
